@@ -1,13 +1,12 @@
 use crate::api::v1::lucky_wheel::{
     config::Config,
     dto::{api_request, api_response},
-    utils::jwt::{TokenType, create_token, verify_token},
+    utils::{
+        cookie::{create_auth_cookie, delete_auth_cookie},
+        jwt::{TokenType, create_token, verify_token},
+    },
 };
-use actix_web::{
-    HttpRequest, HttpResponse, Responder,
-    cookie::{Cookie, SameSite, time::Duration},
-    web,
-};
+use actix_web::{HttpRequest, HttpResponse, Responder, web};
 
 pub async fn sign_in(
     cfg: web::Data<Config>,
@@ -28,13 +27,7 @@ pub async fn sign_in(
     let access_token = create_token(TokenType::AccessToken, &req.username, &cfg.secret_key);
     let session_token = create_token(TokenType::SessionToken, &req.username, &cfg.secret_key);
 
-    let cookie = Cookie::build("access_token", access_token)
-        .path("/")
-        .http_only(true)
-        .same_site(SameSite::Lax)
-        .secure(cfg.is_prod)
-        .max_age(Duration::days(30))
-        .finish();
+    let cookie = create_auth_cookie(&cfg, &access_token);
 
     return HttpResponse::Ok()
         .cookie(cookie)
@@ -45,32 +38,30 @@ pub async fn sign_in(
 }
 
 pub async fn sign_out(cfg: web::Data<Config>) -> impl Responder {
-    let cookie = Cookie::build("access_token", "")
-        .path("/")
-        .http_only(true)
-        .same_site(SameSite::Lax)
-        .secure(cfg.is_prod)
-        .max_age(Duration::ZERO)
-        .finish();
+    let cookie = delete_auth_cookie(&cfg);
 
     return HttpResponse::Ok()
         .cookie(cookie)
         .json(api_response::Base::success("Berhasil sign out", ()));
 }
 
-pub async fn get_session_token(cfg: web::Data<Config>, req: HttpRequest) -> impl Responder {
-    let access_token = match req.cookie("access_token") {
-        Some(c) => c.value().to_string(),
+pub async fn session_token(cfg: web::Data<Config>, req: HttpRequest) -> impl Responder {
+    let cookie = match req.cookie("access_token") {
+        Some(c) => c,
         None => {
             return HttpResponse::Unauthorized()
                 .json(api_response::Base::failed("Invalid credentials"));
         }
     };
+    let access_token = cookie.value();
 
-    let verified = match verify_token(&access_token, &cfg.secret_key) {
+    let verified = match verify_token(access_token, &cfg.secret_key) {
         Ok(r) => r,
         Err(_) => {
+            let cookie = delete_auth_cookie(&cfg);
+
             return HttpResponse::Unauthorized()
+                .cookie(cookie)
                 .json(api_response::Base::failed("Invalid credentials"));
         }
     };

@@ -10,6 +10,13 @@ pub mod api_request {
         #[serde[default]]
         pub password: String,
     }
+
+
+    #[derive(Deserialize)]
+    pub struct WheelItemAdd {
+        pub name: String,
+        pub weight: u32
+    }
 }
 
 

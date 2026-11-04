@@ -1,5 +1,3 @@
-GET http://localhost:8080/api/v1/lucky-wheel/hi
-
 ### Sign in
 POST http://localhost:8080/api/v1/lucky-wheel/sign-in
 Content-Type: application/json
@@ -9,14 +7,19 @@ Content-Type: application/json
     "password": "admin123"
 }
 
-###
-GET http://localhost:8080/api/v1/lucky-wheel/test
+### Sign out
+DELETE http://localhost:8080/api/v1/lucky-wheel/sign-out
 
-###
-GET http://localhost:8080/api/v1/lucky-wheel/secure/data
-
-###
+### Session check or get token
 GET http://localhost:8080/api/v1/lucky-wheel/session-token
 
-###
-DELETE http://localhost:8080/api/v1/lucky-wheel/sign-out
+
+
+### Add new prize
+POST http://localhost:8080/api/v1/lucky-wheel/secure/wheel-item
+Content-Type: application/json
+
+{
+    "name": "Honda PCX",
+    "weight": 15
+}

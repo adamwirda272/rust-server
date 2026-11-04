@@ -18,14 +18,14 @@ pub struct Claims {
 }
 
 impl Claims {
-    pub fn new(token_type: TokenType, subject: &String) -> Self {
+    pub fn new(token_type: TokenType, subject: &str) -> Self {
         let exp_duration = match token_type {
             TokenType::AccessToken => Duration::days(30),
             TokenType::SessionToken => Duration::seconds(30)
         };
         Self {
             token_type,
-            sub: subject.clone(),
+            sub: subject.to_string(),
             exp: (Utc::now() + exp_duration).timestamp() as usize,
             iat: Utc::now().timestamp() as usize
         }
@@ -33,14 +33,14 @@ impl Claims {
 }
 
 
-pub fn create_token(token_type: TokenType, subject: &String, secret_key: impl AsRef<[u8]>) -> String {
-    let claims = Claims::new(token_type, &subject);
+pub fn create_token(token_type: TokenType, subject: &str, secret_key: impl AsRef<[u8]>) -> String {
+    let claims = Claims::new(token_type, subject);
     let encoding_key = &EncodingKey::from_secret(secret_key.as_ref());
 
     return encode(&Header::default(), &claims, encoding_key).unwrap()
 }
 
-pub fn verify_token(token: &String, secret_key: impl AsRef<[u8]>, ) -> Result<Claims, Error> {
+pub fn verify_token(token: &str, secret_key: impl AsRef<[u8]>, ) -> Result<Claims, Error> {
     let decoding_key = &DecodingKey::from_secret(secret_key.as_ref());
 
     let mut validation = Validation::new(Algorithm::HS256);

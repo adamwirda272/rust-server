@@ -2,8 +2,11 @@ use actix_web::{HttpResponse, Scope, middleware as actix_middleware, web};
 
 use crate::{
     api::v1::lucky_wheel::handlers::{
-        auth::{get_session_token, sign_in, sign_out}, test::test_db,
-    }, config::AppConfig,
+        auth::{session_token, sign_in, sign_out},
+        test::add_test,
+        wheel_item::add_wheel_item,
+    },
+    config::AppConfig,
 };
 
 pub mod config;
@@ -18,13 +21,13 @@ pub fn routes(app_cfg: &AppConfig) -> Scope {
 
     web::scope("lucky-wheel")
         .app_data(config.clone())
-        .route("/test", web::get().to(test_db))
+        .route("/test", web::post().to(add_test))
         .route("/sign-in", web::post().to(sign_in))
         .route("/sign-out", web::delete().to(sign_out))
-        .route("/session-token", web::get().to(get_session_token))
+        .route("/session", web::get().to(session_token))
         .service(
             web::scope("/secure")
-                .wrap(actix_middleware::from_fn(middleware::check_auth))
-                .route("/data", web::get().to(|| async {HttpResponse::Ok().body("Data yang dilindungi")})),
+                // .wrap(actix_middleware::from_fn(middleware::check_auth))
+                .route("/wheel-item", web::post().to(add_wheel_item)),
         )
 }
