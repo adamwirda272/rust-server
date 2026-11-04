@@ -1,0 +1,22 @@
+GET http://localhost:8080/api/v1/lucky-wheel/hi
+
+### Sign in
+POST http://localhost:8080/api/v1/lucky-wheel/sign-in
+Content-Type: application/json
+
+{
+    "username": "admin123",
+    "password": "admin123"
+}
+
+###
+GET http://localhost:8080/api/v1/lucky-wheel/test
+
+###
+GET http://localhost:8080/api/v1/lucky-wheel/secure/data
+
+###
+GET http://localhost:8080/api/v1/lucky-wheel/session-token
+
+###
+DELETE http://localhost:8080/api/v1/lucky-wheel/sign-out
