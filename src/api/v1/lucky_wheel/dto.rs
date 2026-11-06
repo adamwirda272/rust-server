@@ -11,14 +11,30 @@ pub mod api_request {
         pub password: String,
     }
 
-
     #[derive(Deserialize)]
     pub struct WheelItemAdd {
         pub name: String,
-        pub weight: u32
+        pub weight: u16,
+    }
+
+    #[derive(Deserialize)]
+    pub struct WheelItemUpdate {
+        #[serde(rename = "_id")]
+        pub id: String,
+        pub name: Option<String>,
+        pub weight: Option<u16>,
+    }
+
+    #[derive(Deserialize)]
+    pub struct VoucherCreate {
+        pub user: String,
+    }
+
+    #[derive(Deserialize)]
+    pub struct Spin {
+        pub code: String,
     }
 }
-
 
 pub mod api_response {
     use super::*;

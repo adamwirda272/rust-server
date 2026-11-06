@@ -1,7 +1,4 @@
-use actix_web::{
-    cookie::{Cookie, SameSite, time::Duration},
-    web,
-};
+use actix_web::cookie::{Cookie, SameSite, time::Duration};
 
 use crate::api::v1::lucky_wheel::config::Config;
 

@@ -27,12 +27,12 @@ pub async fn check_auth(
         .strip_prefix("Bearer ")
         .ok_or_else(|| ErrorUnauthorized("Invalid Bearer format"))?;
 
-    let claims = match verify_token(token, &cfg.secret_key) {
+    let claims = match verify_token(token, &cfg.auth.secret_key) {
         Ok(c) => c,
         Err(_) => return Err(ErrorUnauthorized("Invalid or expired token")),
     };
 
-    if claims.sub != cfg.username {
+    if claims.sub != cfg.auth.username {
         return Err(ErrorUnauthorized("Unauthorized user"));
     }
 

@@ -24,8 +24,8 @@ pub async fn sign_in(
             .json(api_response::Base::failed("Username atau password salah"));
     }
 
-    let access_token = create_token(TokenType::AccessToken, &req.username, &cfg.secret_key);
-    let session_token = create_token(TokenType::SessionToken, &req.username, &cfg.secret_key);
+    let access_token = create_token(TokenType::AccessToken, &req.username, &cfg.auth.secret_key);
+    let session_token = create_token(TokenType::SessionToken, &req.username, &cfg.auth.secret_key);
 
     let cookie = create_auth_cookie(&cfg, &access_token);
 
@@ -55,7 +55,7 @@ pub async fn session_token(cfg: web::Data<Config>, req: HttpRequest) -> impl Res
     };
     let access_token = cookie.value();
 
-    let verified = match verify_token(access_token, &cfg.secret_key) {
+    let verified = match verify_token(access_token, &cfg.auth.secret_key) {
         Ok(r) => r,
         Err(_) => {
             let cookie = delete_auth_cookie(&cfg);
@@ -66,7 +66,7 @@ pub async fn session_token(cfg: web::Data<Config>, req: HttpRequest) -> impl Res
         }
     };
 
-    let session_token = create_token(TokenType::SessionToken, &verified.sub, &cfg.secret_key);
+    let session_token = create_token(TokenType::SessionToken, &verified.sub, &cfg.auth.secret_key);
 
     return HttpResponse::Ok().json(api_response::Base::success(
         "Valid token",

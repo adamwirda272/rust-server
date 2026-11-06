@@ -503,6 +503,7 @@ dependencies = [
  "iana-time-zone",
  "js-sys",
  "num-traits",
+ "serde",
  "wasm-bindgen",
  "windows-link",
 ]
@@ -1981,6 +1982,7 @@ dependencies = [
  "rand 0.10.3",
  "serde",
  "serde_json",
+ "uuid",
 ]
 
 [[package]]

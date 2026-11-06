@@ -14,12 +14,42 @@ DELETE http://localhost:8080/api/v1/lucky-wheel/sign-out
 GET http://localhost:8080/api/v1/lucky-wheel/session-token
 
 
+### get all wheel items
+GET http://localhost:8080/api/v1/lucky-wheel/secure/wheel-item
 
 ### Add new prize
 POST http://localhost:8080/api/v1/lucky-wheel/secure/wheel-item
 Content-Type: application/json
 
 {
-    "name": "Honda PCX",
-    "weight": 15
+    "name": "IDR 100.000",
+    "weight": 45
+}
+
+### Update item
+PATCH  http://localhost:8080/api/v1/lucky-wheel/secure/wheel-item
+Content-Type: application/json
+
+{
+    "_id": "42ddc95d-b5a3-47c2-95ea-2b40c89a8cfe",
+    "weight": 21
+}
+
+### Get all vouchers
+GET http://localhost:8080/api/v1/lucky-wheel/secure/voucher
+
+### Create voucher
+POST http://localhost:8080/api/v1/lucky-wheel/secure/voucher
+Content-Type: application/json
+
+{
+    "user": "Agung"
+}
+
+### Test
+POST http://localhost:8080/api/v1/lucky-wheel/test
+Content-Type: application/json
+
+{
+    "code": "ZNAG6D"
 }
